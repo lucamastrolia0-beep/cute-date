@@ -7,19 +7,19 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --primary: #ff6b8b;
-            --primary-glow: rgba(255, 107, 139, 0.4);
-            --bg-card: rgba(255, 240, 243, 0.95);
-            --text: #742a3a;
-            --pink-light: #ffccd5;
-            --pink-dark: #c9184a;
+            --primary: #ff477e;
+            --primary-glow: rgba(255, 71, 126, 0.3);
+            --bg-card: #fff0f3;
+            --text: #5c2c35;
+            --vintage-border: #ffb7b2;
+            --pink-dark: #9d0208;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: radial-gradient(circle at 50% 50%, #fff0f3 0%, #ffccd5 50%, #ff85a1 100%);
+            font-family: 'Georgia', serif;
+            background: radial-gradient(circle at 50% 50%, #ffe5ec 0%, #ffccd5 60%, #ffb7b2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -29,24 +29,17 @@
             position: relative;
         }
 
-        .bg-glow {
-            position: absolute; width: 700px; height: 700px;
-            background: radial-gradient(circle, rgba(255,107,139,0.3) 0%, rgba(255,255,255,0) 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1; pointer-events: none;
-        }
-
         #muteToggle {
             position: absolute; top: 25px; right: 25px;
-            background: var(--bg-card); border: 2px solid var(--primary);
+            background: #fff; border: 2px dashed var(--primary);
             border-radius: 50%; width: 50px; height: 50px;
             font-size: 1.3rem; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; z-index: 100; box-shadow: 0 8px 20px rgba(255, 107, 139, 0.2);
+            cursor: pointer; z-index: 100; box-shadow: 0 6px 15px rgba(0,0,0,0.05);
         }
 
         .heart-bg {
-            position: absolute; color: rgba(255, 107, 139, 0.4);
-            font-size: 24px; animation: floatUp 4.5s linear infinite;
+            position: absolute; color: rgba(255, 71, 126, 0.3);
+            font-size: 28px; animation: floatUp 5s linear infinite;
             bottom: -60px; z-index: 0; pointer-events: none;
         }
         @keyframes floatUp {
@@ -55,31 +48,35 @@
         }
 
         .window-container {
-            width: 430px; max-width: 92%; height: 620px; position: relative; z-index: 10;
+            width: 440px; max-width: 92%; height: 635px; position: relative; z-index: 10;
         }
 
+        /* Stile Lettera Vintage / Cartolina Coquette */
         .card {
             position: absolute; width: 100%; height: 100%;
-            background: var(--bg-card); padding: 35px 25px; border-radius: 35px;
-            border: 2px solid #ffb3c6;
-            box-shadow: 0 25px 50px rgba(255, 75, 110, 0.2);
+            background: var(--bg-card); padding: 35px 25px; border-radius: 20px;
+            border: 4px double var(--vintage-border);
+            box-shadow: 0 20px 40px rgba(92, 44, 53, 0.15), inset 0 0 40px rgba(255,255,255,0.6);
             text-align: center; display: flex; flex-direction: column; justify-content: space-between;
             transition: opacity 0.4s ease, transform 0.4s ease;
-            opacity: 0; transform: scale(0.9); pointer-events: none;
+            opacity: 0; transform: scale(0.95); pointer-events: none;
         }
 
         .card.active { opacity: 1; transform: scale(1); pointer-events: auto; }
-        .card.exit { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        .card.exit { opacity: 0; transform: scale(1.05); pointer-events: none; }
 
+        /* Contenitore flessibile che predilige gli Emoji se le gif falliscono */
         .gif-container {
-            width: 100%; height: 200px; overflow: hidden; border-radius: 22px;
-            background: #fff0f3; display: flex; justify-content: center; align-items: center;
-            border: 2px solid #ffccd5; padding: 5px;
+            width: 100%; height: 210px; overflow: hidden; border-radius: 12px;
+            background: #fff; display: flex; justify-content: center; align-items: center;
+            border: 2px dashed var(--vintage-border); padding: 5px;
+            font-size: 5.5rem; /* Fallback Emoji gigante */
+            user-select: none;
         }
-        .gif-container img { max-height: 100%; max-width: 100%; object-fit: contain; border-radius: 18px; }
+        .gif-container img { max-height: 100%; max-width: 100%; object-fit: contain; border-radius: 8px; }
 
-        h2 { font-size: 1.65rem; font-weight: 800; color: var(--pink-dark); line-height: 1.35; }
-        .cursor { display: inline-block; width: 3px; background-color: var(--primary); margin-left: 3px; animation: blink 0.7s infinite; }
+        h2 { font-size: 1.6rem; font-style: italic; font-weight: 700; color: var(--pink-dark); line-height: 1.4; }
+        .cursor { display: inline-block; width: 2px; background-color: var(--primary); margin-left: 3px; animation: blink 0.7s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         .btn-container {
@@ -88,57 +85,59 @@
         }
 
         button {
-            padding: 16px 35px; font-size: 1.15rem; border: none; border-radius: 50px;
-            cursor: pointer; font-weight: 700; transition: transform 0.2s;
+            padding: 15px 35px; font-size: 1.1rem; border: none; border-radius: 12px;
+            cursor: pointer; font-family: 'Georgia', serif; font-weight: 700; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         #yesBtn {
-            background: linear-gradient(135deg, #ff4f79, #ff0a54); color: white;
-            box-shadow: 0 8px 20px rgba(255, 10, 84, 0.4);
+            background: #ff477e; color: white; border: 2px solid #ff1493;
+            box-shadow: 0 6px 15px var(--primary-glow);
         }
-        #yesBtn:hover { transform: scale(1.05); }
+        #yesBtn:hover { transform: translateY(-2px); }
 
         #noBtn { 
-            background: #ffe5ec; color: #ff4757; border: 2px solid #ffb3c6;
+            background: #fff; color: #ff477e; border: 2px dashed #ff477e;
             white-space: nowrap; z-index: 99;
         }
 
         .premium-form { display: flex; flex-direction: column; gap: 15px; text-align: left; }
         .input-wrapper { position: relative; }
         .input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
+        
         input[type="date"], input[type="time"] {
-            width: 100%; padding: 16px 16px 16px 50px; border: 2px solid #ffccd5;
-            border-radius: 20px; font-size: 1.1rem; outline: none; background: white;
-            font-weight: 600; color: var(--text); font-family: inherit;
+            width: 100%; padding: 15px 16px 15px 50px; border: 2px solid var(--vintage-border);
+            border-radius: 12px; font-size: 1.1rem; outline: none; background: white;
+            color: var(--text); font-family: inherit;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 12px rgba(255, 107, 139, 0.3); }
-        .days-notice { font-size: 0.9rem; color: var(--pink-dark); font-weight: 700; margin-top: 5px; text-align: center; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 8px var(--primary-glow); }
+        .days-notice { font-size: 0.95rem; color: var(--primary); font-style: italic; font-weight: 700; margin-top: 5px; text-align: center; }
 
         .grid-food { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .food-option {
-            border: 2px solid #ffccd5; padding: 20px 10px; border-radius: 22px;
+            border: 2px solid var(--vintage-border); padding: 18px 10px; border-radius: 14px;
             cursor: pointer; font-size: 1.1rem; text-align: center; background: white;
-            font-weight: 600; transition: all 0.2s;
+            font-weight: 700; transition: all 0.2s;
         }
-        .food-option:hover { border-color: #ff758f; background: #fff0f3; }
+        .food-option:hover { border-color: var(--primary); background: #fff0f3; }
         .food-option.selected {
-            border-color: var(--pink-dark); background: #ffb3c6; color: var(--pink-dark);
-            transform: scale(1.03); font-weight: 800;
+            border-color: var(--pink-dark); background: #ffccd5; color: var(--pink-dark);
+            transform: scale(1.02);
         }
 
-        .summary-box { background: linear-gradient(135deg, #ffe5ec, #ffccd5); padding: 15px; border-radius: 24px; border: 2px dashed #ff4f79; }
-        .summary-item { font-size: 1.05rem; margin: 6px 0; text-align: left; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--pink-dark); }
+        /* Dettagli in stile pergamena vintage */
+        .summary-box { background: #fff; padding: 15px; border-radius: 14px; border: 2px dashed var(--primary); }
+        .summary-item { font-size: 1.05rem; margin: 6px 0; text-align: left; font-weight: 700; display: flex; align-items: center; gap: 10px; color: var(--text); }
         
         .countdown-container {
-            display: flex; justify-content: space-around; background: #ff758f;
-            color: white; padding: 12px; border-radius: 22px; box-shadow: 0 8px 15px rgba(255, 117, 143, 0.3);
+            display: flex; justify-content: space-around; background: #fff0f3;
+            color: var(--pink-dark); padding: 12px; border-radius: 14px; border: 2px solid var(--vintage-border);
         }
         .countdown-box { display: flex; flex-direction: column; align-items: center; }
-        .countdown-number { font-size: 1.4rem; font-weight: 800; color: white; }
-        .countdown-label { font-size: 0.75rem; text-transform: uppercase; opacity: 0.9; margin-top: 2px; font-weight: 700; }
+        .countdown-number { font-size: 1.4rem; font-weight: 800; }
+        .countdown-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; margin-top: 2px; font-weight: 700; }
 
-        #calBtn { background: #ff0a54; color: white; width: 100%; padding: 16px; border-radius: 16px; font-weight: 700; box-shadow: 0 6px 15px rgba(255, 10, 84, 0.3); }
-        #calBtn:hover { transform: translateY(-2px); }
+        #calBtn { background: #ffb7b2; color: var(--pink-dark); border: 2px solid var(--primary); width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; }
+        #calBtn:hover { background: #ffccd5; }
 
         .sparkle { position: absolute; pointer-events: none; animation: sparkleOut 0.8s linear forwards; z-index: 99; }
         @keyframes sparkleOut {
@@ -149,7 +148,6 @@
 </head>
 <body>
 
-    <div class="bg-glow"></div>
     <div id="muteToggle" onclick="toggleMute()">🎵</div>
 
     <audio id="bgMusic" loop>
@@ -160,7 +158,8 @@
         <!-- STEP 1 -->
         <div id="step1" class="card active">
             <div class="gif-container">
-                <img id="mainGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZndDZsZ3ZxaXN0cnVvNDFpbnM2bW95cmZid294YTZidmF0cndwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c76IJLufpNwSULPk77/giphy.gif" alt="Cute bear">
+                <!-- Se l'immagine scarta, l'emoji gigante fa da perfetto design rétro alternativo -->
+                <img id="mainGif" src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZndDZsZ3ZxaXN0cnVvNDFpbnM2bW95cmZid294YTZidmF0cndwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c76IJLufpNwSULPk77/giphy.gif" onerror="this.style.display='none'; this.parentElement.innerHTML='🧸🌸'" alt="Cute bear">
             </div>
             <h2><span id="textTarget"></span><span class="cursor"></span></h2>
             <div class="btn-container" id="mainBtnArea">
@@ -193,7 +192,7 @@
                 <div class="food-option" onclick="selectFood(this, 'Pizza 🍕')">Pizza 🍕</div>
                 <div class="food-option" onclick="selectFood(this, 'Sushi 🍣')">Sushi 🍣</div>
                 <div class="food-option" onclick="selectFood(this, 'Burgers 🍔')">Burgers 🍔</div>
-                <div class="food-option" onclick="selectFood(this, 'Pasta <span>🍝</span>')">Pasta 🍝</div>
+                <div class="food-option" onclick="selectFood(this, 'Pasta 🍝')">Pasta 🍝</div>
             </div>
             <button id="yesBtn" onclick="showSummary()">Confirm Menu 💘</button>
         </div>
@@ -201,7 +200,7 @@
         <!-- STEP 4 -->
         <div id="step4" class="card">
             <div class="gif-container" style="height: 140px;">
-                <img src="https://media.giphy.com/media/142t72vk56ASnx84e4/giphy.gif" alt="Cute Bears Hugging">
+                <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTRjMTR2YXJ1ZDJ2aTZ3cmN4ZXp6MzBtOHl2MmJpN3k1eWpzbG5jdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/142t72vk56ASnx84e4/giphy.gif" onerror="this.style.display='none'; this.parentElement.innerHTML='👩‍❤️‍👨💞'" alt="Cute Bears Hugging">
             </div>
             <h2>IT'S OFFICIAL! 🎉</h2>
             <div class="summary-box">
@@ -240,9 +239,9 @@
 
         function createSparkle(x, y) {
             const s = document.createElement('div'); s.classList.add('sparkle');
-            s.innerText = ['✨', '🌸', '💖', '💝'][Math.floor(Math.random()*4)];
+            s.innerText = ['🌸', '💝', '🎀', '✨'][Math.floor(Math.random()*4)];
             s.style.left = x + 'px'; s.style.top = y + 'px';
-            s.style.fontSize = Math.random() * 8 + 12 + 'px';
+            s.style.fontSize = Math.random() * 8 + 14 + 'px';
             document.body.appendChild(s); setTimeout(() => s.remove(), 800);
         }
 
@@ -252,9 +251,9 @@
             if(style === 'escape') {
                 const osc = ctx.createOscillator(); const gain = ctx.createGain();
                 osc.connect(gain); gain.connect(ctx.destination);
-                osc.frequency.setValueAtTime(300, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                osc.frequency.setValueAtTime(280, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.06, ctx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.08);
                 osc.start(); osc.stop(ctx.currentTime + 0.08);
             } else if(style === 'win') {
@@ -262,7 +261,7 @@
                     const o = ctx.createOscillator(); const g = ctx.createGain();
                     o.connect(g); g.connect(ctx.destination); o.type = 'sine';
                     o.frequency.setValueAtTime(f, ctx.currentTime + i*0.06);
-                    g.gain.setValueAtTime(0.1, ctx.currentTime + i*0.06);
+                    g.gain.setValueAtTime(0.08, ctx.currentTime + i*0.06);
                     g.gain.linearRampToValueAtTime(0, ctx.currentTime + i*0.06 + 0.15);
                     o.start(ctx.currentTime + i*0.06); o.stop(ctx.currentTime + i*0.06 + 0.15);
                 });
@@ -277,12 +276,11 @@
 
         function startRomance() {
             audioFeedback('win');
-            if(navigator.vibrate) navigator.vibrate([60, 40, 60]);
-            document.body.style.background = "radial-gradient(circle at 50% 50%, #ff85a1 0%, #ff4f79 100%)";
-            music.volume = 0.3; music.play().catch(()=>{});
+            document.body.style.background = "radial-gradient(circle at 50% 50%, #ffccd5 0%, #ff85a1 100%)";
+            music.volume = 0.25; music.play().catch(()=>{});
             setInterval(() => {
                 const h = document.createElement('div'); h.classList.add('heart-bg');
-                h.innerText = ['❤️', '💖', '🌸', '💕', '💝'][Math.floor(Math.random()*5)];
+                h.innerText = ['🎀', '🌸', '💕', '💝'][Math.floor(Math.random()*4)];
                 h.style.left = Math.random() * 100 + "vw";
                 h.style.animationDuration = Math.random() * 2 + 3 + "s";
                 document.body.appendChild(h); setTimeout(() => h.remove(), 4500);
@@ -293,16 +291,19 @@
         const noBtn = document.getElementById('noBtn');
         const mainGif = document.getElementById('mainGif');
 
-        // FUGA VELOCE, FLUIDA E SENZA SCATTI
         function escapeNoBtn() {
             if (currentStep !== 1) return;
             noClickCount++;
             audioFeedback('escape');
-            mainGif.src = "https://media.giphy.com/media/7SF5scGB2AFr1XPumq/giphy.gif";
+            
+            // Cambia gif in caso di rifiuto (o mostra emoji triste se bloccata)
+            if(mainGif) {
+                mainGif.src = "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZndDZsZ3ZxaXN0cnVvNDFpbnM2bW95cmZid294YTZidmF0cndwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7SF5scGB2AFr1XPumq/giphy.gif";
+            }
 
-            if (noClickCount >= 7) {
+            if (noClickCount >= 6) {
                 noBtn.style.position = 'static'; 
-                noBtn.innerText = "Ok... I give up! Click YES! 🏳️";
+                noBtn.innerText = "Ok... Click YES! 🏳️";
                 noBtn.disabled = true; return;
             }
 
@@ -311,16 +312,16 @@
                 document.getElementById('mainBtnArea').appendChild(noBtn);
             }
 
-            // Quadranti sicuri precalcolati lontani dal tasto YES
-            const safePositions = [
-                {x: 40, y: 40}, {x: 280, y: 40},
-                {x: 40, y: 450}, {x: 280, y: 450},
-                {x: 50, y: 150}, {x: 270, y: 150}
+            // Griglia di posizioni statiche ed istantanee anti-scatto
+            const positions = [
+                {x: 35, y: 50}, {x: 275, y: 50},
+                {x: 35, y: 460}, {x: 275, y: 460},
+                {x: 40, y: 160}, {x: 270, y: 160}
             ];
 
-            const currentPos = safePositions[(noClickCount - 1) % safePositions.length];
-            noBtn.style.left = currentPos.x + 'px';
-            noBtn.style.top = currentPos.y + 'px';
+            const nextPos = positions[(noClickCount - 1) % positions.length];
+            noBtn.style.left = nextPos.x + 'px';
+            noBtn.style.top = nextPos.y + 'px';
             noBtn.style.transform = `scale(${1 - noClickCount * 0.08})`;
         }
 
@@ -332,9 +333,9 @@
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             
             const textEl = document.getElementById('daysNoticeText');
-            if(diffDays === 0) textEl.innerText = "Uh, that's tonight! Fast mover! 😏🔥";
-            else if(diffDays === 1) textEl.innerText = "Tomorrow! Perfect, counting down! ⏳";
-            else if(diffDays > 1) textEl.innerText = `Only ${diffDays} days away! Can't wait. ✨`;
+            if(diffDays === 0) textEl.innerText = "Tonight? Bold move! 😏✨";
+            else if(diffDays === 1) textEl.innerText = "Tomorrow! Counting down the hours... ⏳";
+            else if(diffDays > 1) textEl.innerText = `${diffDays} days left! Perfect. 🌸`;
         }
 
         function nextStep(step) {
@@ -350,7 +351,7 @@
         }
 
         function showSummary() {
-            if(!selectedFood) return alert("Pick what you're craving! 🥺");
+            if(!selectedFood) return alert("Pick something! 🥺");
             rawDate = document.getElementById('dateInput').value;
             rawTime = document.getElementById('timeInput').value;
 
@@ -361,10 +362,10 @@
 
             nextStep(4);
             
-            var end = Date.now() + (5 * 1000);
+            var end = Date.now() + (4 * 1000);
             (function frame() {
-                confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0, y: 0.8 }, colors: ['#ff4f79', '#ffccd5', '#ffffff'] });
-                confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1, y: 0.8 }, colors: ['#ff4f79', '#ffccd5', '#ffffff'] });
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: ['#ff477e', '#ffccd5', '#ffffff'] });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: ['#ff477e', '#ffccd5', '#ffffff'] });
                 if (Date.now() < end) requestAnimationFrame(frame);
             }());
 
@@ -376,7 +377,7 @@
             setInterval(() => {
                 const diff = target - new Date().getTime();
                 if (diff < 0) {
-                    document.querySelector('.countdown-container').innerHTML = "<b style='color:white; font-size:1.1rem;'>It's time for our date! 🥰🥂</b>";
+                    document.querySelector('.countdown-container').innerHTML = "<b style='color:var(--pink-dark); font-size:1.1rem;'>It's time for our date! 🥰🥂</b>";
                     return;
                 }
                 document.getElementById('cdDays').innerText = String(Math.floor(diff / (1000*60*60*24))).padStart(2, '0');
