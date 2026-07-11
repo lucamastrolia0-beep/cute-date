@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you go on a date with me? 🌸</title>
+    <style>
+        :root {
+            --bg-color: #f7e1e6;
+            --card-bg: #ffffff;
+            --primary-color: #d14d72;
+            --text-color: #4a4a4a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            transition: all 0.5s ease;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 80px;
+            position: relative;
+        }
+
+        button {
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s ease;
+        }
+
+        #yesBtn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #noBtn {
+            background-color: #f0f0f0;
+            color: #666;
+            position: absolute;
+        }
+
+        /* Schermate successive */
+        .hidden {
+            display: none !important;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="date"], input[type="time"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .grid-food {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .food-option {
+            border: 2px solid #f0f0f0;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .food-option.selected {
+            border-color: var(--primary-color);
+            background-color: #fdf0f3;
+        }
+
+        .summary-item {
+            background: #fafafa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .subtext {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STEP 1: La Proposta -->
+    <div id="step1" class="card">
+        <h2>🌸 Will you go on a date with me? 🌸</h2>
+        <div class="btn-container">
+            <button id="yesBtn" onclick="nextStep(2)">YES 💖</button>
+            <button id="noBtn">NO 🥺</button>
+        </div>
+    </div>
+
+    <!-- STEP 2: Quando e l'Ora -->
+    <div id="step2" class="card hidden">
+        <h2>So... when are you free? 📅🐾</h2>
+        <div class="input-group">
+            <label for="dateInput">Pick a day:</label>
+            <input type="date" id="dateInput">
+        </div>
+        <div class="input-group">
+            <label for="timeInput">What time?</label>
+            <input type="time" id="timeInput" value="20:00">
+        </div>
+        <button id="yesBtn" style="width: 100%;" onclick="nextStep(3)">Next 💞</button>
+    </div>
+
+    <!-- STEP 3: Il Cibo -->
+    <div id="step3" class="card hidden">
+        <h2>What are we feeling? 🍕🥂</h2>
+        <div class="grid-food">
+            <div class="food-option" onclick="selectFood(this, 'Pizza 🍕')">Pizza 🍕</div>
+            <div class="food-option" onclick="selectFood(this, 'Sushi 🍣')">Sushi 🍣</div>
+            <div class="food-option" onclick="selectFood(this, 'Burgers 🍔')">Burgers 🍔</div>
+            <div class="food-option" onclick="selectFood(this, 'Pasta 🍝')">Pasta 🍝</div>
+        </div>
+        <button id="yesBtn" style="width: 100%;" onclick="showSummary()">Next 💘</button>
+    </div>
+
+    <!-- STEP 4: Riepilogo Finale -->
+    <div id="step4" class="card hidden">
+        <h2>YAY!! 💕</h2>
+        <div class="summary-item">📅 <span id="finalDate"></span></div>
+        <div class="summary-item">⏰ <span id="finalTime"></span></div>
+        <div class="summary-item">🍽️ <span id="finalFood"></span></div>
+        <h3 style="color: var(--primary-color); margin-top: 25px;">I can't wait to see you! ✨</h3>
+        <p class="subtext">(normal guys send texts, I made a website. I'm not like other guys xx)</p>
+    </div>
+
+    <script>
+        let selectedFood = "";
+
+        // Imposta la data minima a oggi
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('dateInput').min = today;
+        document.getElementById('dateInput').value = today;
+
+        // Logica pulsante NO che scappa
+        const noBtn = document.getElementById('noBtn');
+        
+        function moveNoButton() {
+            // Genera posizioni casuali restando visibile nella viewport
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 40) + 20;
+            
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        }
+
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('click', moveNoButton); // Per i dispositivi mobile
+
+        // Gestione degli step
+        function nextStep(step) {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            
+            document.getElementById('step' + step).classList.remove('hidden');
+        }
+
+        function selectFood(element, food) {
+            // Rimuovi selezione precedente
+            document.querySelectorAll('.food-option').forEach(opt => opt.classList.remove('selected'));
+            // Aggiungi selezione attuale
+            element.classList.add('selected');
+            selectedFood = food;
+        }
+
+        function showSummary() {
+            if(!selectedFood) {
+                alert("Please select what you want to eat! 🥺");
+                return;
+            }
+            
+            const dateVal = new Date(document.getElementById('dateInput').value);
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            const formattedDate = dateVal.toLocaleDateString('en-US', options);
+            
+            const timeVal = document.getElementById('timeInput').value;
+
+            document.getElementById('finalDate').innerText = formattedDate;
+            document.getElementById('finalTime').innerText = timeVal;
+            document.getElementById('finalFood').innerText = selectedFood;
+
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
