@@ -9,7 +9,7 @@
     <style>
         :root {
             --bg-color: #f7e1e6;
-            --card-bg: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.92);
             --primary-color: #d14d72;
             --text-color: #4a4a4a;
         }
@@ -25,7 +25,8 @@
             color: var(--text-color);
             overflow: hidden;
             position: relative;
-            transition: background-color 1s ease; /* Transizione fluida dello sfondo */
+            transition: background-color 1s ease;
+            perspective: 1000px; /* Necessario per l'effetto 3D */
         }
 
         /* Sfondo con cuori animati */
@@ -41,45 +42,56 @@
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-105vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
         .card {
             background: var(--card-bg);
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(209, 77, 114, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(209, 77, 114, 0.15);
             text-align: center;
             max-width: 400px;
             width: 90%;
             z-index: 10;
-            animation: fadeIn 0.5s ease-out;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease, background-color 0.5s;
+            animation: cardPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes cardPop {
+            from { opacity: 0; transform: scale(0.8) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .gif-container {
             width: 100%;
-            max-height: 150px;
+            max-height: 180px;
             overflow: hidden;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .gif-container img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            width: auto;
+            height: 100%;
+            max-height: 180px;
+            object-fit: contain;
         }
 
         h2 {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             margin-bottom: 25px;
             color: #333;
+            line-height: 1.4;
         }
 
         .btn-container {
@@ -92,18 +104,18 @@
         }
 
         button {
-            padding: 12px 35px;
+            padding: 14px 35px;
             font-size: 1.1rem;
             border: none;
-            border-radius: 25px;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(209, 77, 114, 0.3);
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 20px rgba(209, 77, 114, 0.3);
         }
 
         #yesBtn {
@@ -112,10 +124,10 @@
         }
 
         #noBtn {
-            background-color: #f0f0f0;
-            color: #666;
+            background-color: #efebeb;
+            color: #777;
             position: absolute;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
         }
 
         .hidden { display: none !important; }
@@ -129,20 +141,25 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
+            color: #555;
         }
 
         input[type="date"], input[type="time"] {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #f0f0f0;
-            border-radius: 10px;
+            padding: 14px;
+            border: 2px solid #efebeb;
+            border-radius: 14px;
             font-size: 1rem;
             box-sizing: border-box;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.3s;
+            background: #fdfbfb;
         }
 
-        input:focus { border-color: var(--primary-color); }
+        input:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+        }
 
         .grid-food {
             display: grid;
@@ -152,39 +169,76 @@
         }
 
         .food-option {
-            border: 2px solid #f0f0f0;
-            padding: 15px;
-            border-radius: 15px;
+            border: 2px solid #efebeb;
+            padding: 18px 10px;
+            border-radius: 16px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
+            font-size: 1.05rem;
+            transition: all 0.25s ease;
             background: white;
         }
 
         .food-option:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             border-color: #ffb3c6;
         }
 
         .food-option.selected {
             border-color: var(--primary-color);
             background-color: #fdf0f3;
-            transform: scale(1.02);
+            transform: scale(1.03);
+            font-weight: bold;
         }
 
         .summary-item {
             background: #fdf0f3;
             margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 14px;
             text-align: left;
-            font-size: 1.1rem;
-            border-left: 4px solid var(--primary-color);
+            font-size: 1.05rem;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        /* Stile del conto alla rovescia */
+        .countdown-container {
+            display: flex;
+            justify-content: space-around;
+            background: #333;
+            color: white;
+            padding: 12px;
+            border-radius: 14px;
+            margin-top: 15px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .countdown-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .countdown-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ffb3c6;
+        }
+        .countdown-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        #calBtn {
+            background-color: #2b9348;
+            color: white;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 1rem;
+            padding: 12px;
         }
 
         .subtext {
             font-size: 0.8rem;
-            color: #999;
+            color: #aa9e9e;
             margin-top: 20px;
             font-style: italic;
         }
@@ -200,7 +254,7 @@
     <!-- STEP 1: La Proposta -->
     <div id="step1" class="card">
         <div class="gif-container">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZndDZsZ3ZxaXN0cnVvNDFpbnM2bW95cmZid294YTZidmF0cndwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c76IJLufpNwSULPk77/giphy.gif" alt="Cute mocha bear">
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZndDZsZ3ZxaXN0cnVvNDFpbnM2bW95cmZid294YTZidmF0cndwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c76IJLufpNwSULPk77/giphy.gif" alt="Cute bear">
         </div>
         <h2>🌸 Will you go on a date with me<span id="customName"></span>? 🌸</h2>
         <div class="btn-container">
@@ -238,31 +292,54 @@
     <!-- STEP 4: Riepilogo Finale -->
     <div id="step4" class="card hidden">
         <div class="gif-container">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHI3M281N2thb3F6cjN6Znd6cmg4MWhmb3BvczAwZzd0NGYxa2FpOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dU6bZkr08L0CHvIm6e/giphy.gif" alt="Happy bear jump">
+            <img src="https://media.tenor.com/gU4o4Y5Cko8AAAAM/milk-and-mocha-hug.gif" alt="Cute hug">
         </div>
         <h2>YAY!! 💕 🎉</h2>
         <div class="summary-item">📅 <span id="finalDate"></span></div>
         <div class="summary-item">⏰ <span id="finalTime"></span></div>
         <div class="summary-item">🍽️ <span id="finalFood"></span></div>
-        <h3 style="color: var(--primary-color); margin-top: 25px;">I can't wait to see you! ✨</h3>
+        
+        <!-- MITIGAZIONE COUNTDOWN -->
+        <div class="countdown-container">
+            <div class="countdown-box"><span class="countdown-number" id="cdDays">00</span><span class="countdown-label">Days</span></div>
+            <div class="countdown-box"><span class="countdown-number" id="cdHours">00</span><span class="countdown-label">Hours</span></div>
+            <div class="countdown-box"><span class="countdown-number" id="cdMins">00</span><span class="countdown-label">Mins</span></div>
+            <div class="countdown-box"><span class="countdown-number" id="cdSecs">00</span><span class="countdown-label">Secs</span></div>
+        </div>
+
+        <button id="calBtn" onclick="addToCalendar()">📅 Add to My Calendar</button>
+        <h3 style="color: var(--primary-color); margin-top: 20px; font-size: 1.2rem;">I can't wait to see you! ✨</h3>
         <p class="subtext">(normal guys send texts, I made a website. I'm not like other guys xx)</p>
     </div>
 
     <script>
         let selectedFood = "";
+        let rawDate = "";
+        let rawTime = "";
+        let noClickCount = 0;
 
-        // FUNZIONE 1: Leggi il nome dall'URL (Es: link.com?name=Giulia)
+        // Configura qui la tua mail per ricevere la notifica segreta!
+        const MY_EMAIL = "INSERISCI_QUI_LA_TUA_EMAIL@ESEMPIO.COM"; 
+
+        // Lettura nome da URL
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('name');
-        if (name) {
-            document.getElementById('customName').innerText = ", " + name;
-        }
+        if (name) document.getElementById('customName').innerText = ", " + name;
+
+        // Effetto di inclinazione 3D (Parallasse) della Card al movimento del mouse
+        const card = document.querySelector('.card');
+        document.addEventListener('mousemove', (e) => {
+            if(window.innerWidth < 768) return; // Disattiva su mobile per fluidità
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
 
         // Generatore di cuori
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart-bg');
-            const hearts = ['❤️', '💖', '🌸', '💕', '💘'];
+            const hearts = ['❤️', '💖', '🌸', '💕', '💘', '✨'];
             heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
             heart.style.left = Math.random() * 100 + "vw";
             heart.style.animationDuration = Math.random() * 3 + 4 + "s";
@@ -272,46 +349,47 @@
         }
         let heartInterval = setInterval(createHeart, 800);
 
-        // Click su YES (Inizio musica + vibrazione + cambio colore sfondo)
         function startRomance() {
             const music = document.getElementById('bgMusic');
             music.volume = 0.4;
             music.play().catch(e => console.log("Audio in attesa"));
-            
-            // Vibrazione (solo su mobile supportati)
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-
-            // Lo sfondo diventa di un rosa più caldo e intenso
             document.body.style.backgroundColor = "#fcd5dc";
-
             clearInterval(heartInterval);
             heartInterval = setInterval(createHeart, 300); 
-
             nextStep(2);
         }
 
-        // Configurazione Date minima
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('dateInput').min = today;
         document.getElementById('dateInput').value = today;
 
-        // Bottone NO che scappa
+        // Bottone NO ironico che si rimpicciolisce fino ad arrendersi
         const noBtn = document.getElementById('noBtn');
         function moveNoButton() {
-            const padding = 50;
+            noClickCount++;
+            if(noClickCount >= 5) {
+                noBtn.style.position = 'static';
+                noBtn.style.transform = 'scale(0.5)';
+                noBtn.innerText = "Ok, mi arrendo... clicca YES! 🏳️";
+                noBtn.disabled = true;
+                return;
+            }
+            const padding = 60;
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - (padding * 2)) + padding;
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
+            noBtn.style.transform = `scale(${1 - noClickCount*0.15})`; // Diventa progressivamente più piccolo
         }
         noBtn.addEventListener('mouseover', moveNoButton);
         noBtn.addEventListener('click', moveNoButton); 
 
         function nextStep(step) {
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.add('hidden');
-            document.getElementById('step3').classList.add('hidden');
+            document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
             document.getElementById('step' + step).classList.remove('hidden');
+            // Reset rotazione 3D al cambio di pagina
+            card.style.transform = "rotateY(0deg) rotateX(0deg)";
         }
 
         function selectFood(element, food) {
@@ -320,43 +398,104 @@
             selectedFood = food;
         }
 
-        // FUNZIONE 2: Mostra riepilogo + Esplosione Coriandoli reali
         function showSummary() {
             if(!selectedFood) {
                 alert("Please select what you want to eat! 🥺");
                 return;
             }
             
-            const dateVal = new Date(document.getElementById('dateInput').value);
+            rawDate = document.getElementById('dateInput').value;
+            rawTime = document.getElementById('timeInput').value;
+
+            const dateVal = new Date(rawDate);
             const options = { weekday: 'long', month: 'long', day: 'numeric' };
             const formattedDate = dateVal.toLocaleDateString('en-US', options);
-            const timeVal = document.getElementById('timeInput').value;
 
             document.getElementById('finalDate').innerText = formattedDate;
-            document.getElementById('finalTime').innerText = timeVal;
+            document.getElementById('finalTime').innerText = rawTime;
             document.getElementById('finalFood').innerText = selectedFood;
 
-            document.getElementById('step3').classList.add('hidden');
-            document.getElementById('step4').classList.remove('hidden');
+            nextStep(4);
 
-            // Pioggia fitta di cuori in background
             clearInterval(heartInterval);
-            setInterval(createHeart, 150);
+            setInterval(createHeart, 120);
 
-            // ESPLOSIONE DI CORIANDOLI!
-            var duration = 4 * 1000;
+            // Esplosione Coriandoli 
+            var duration = 5 * 1000;
             var end = Date.now() + duration;
-
             (function frame() {
-                // Coriandoli da sinistra
-                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.8 }, colors: ['#d14d72', '#ffb3c6', '#ffffff'] });
-                // Coriandoli da destra
-                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.8 }, colors: ['#d14d72', '#ffb3c6', '#ffffff'] });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
+                confetti({ particleCount: 4, angle: 60, spread: 60, origin: { x: 0, y: 0.85 }, colors: ['#d14d72', '#ffb3c6', '#fff'] });
+                confetti({ particleCount: 4, angle: 120, spread: 60, origin: { x: 1, y: 0.85 }, colors: ['#d14d72', '#ffb3c6', '#fff'] });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
+
+            // Avvia il Countdown reale
+            startCountdown(rawDate, rawTime);
+
+            // Invia la notifica email invisibile via Formspree se configurata
+            if(MY_EMAIL && !MY_EMAIL.includes("ESEMPIO.COM")) {
+                const formData = new FormData();
+                formData.append('Name', name || 'Qualcuno');
+                formData.append('Date', formattedDate);
+                formData.append('Time', rawTime);
+                formData.append('Food Chosen', selectedFood);
+                fetch(`https://formspree.io/f/${MY_EMAIL.split('@')[0]}`, { // Formspree di fallback o webhook alternativo
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                }).catch(e => console.log("Invio notifica in background."));
+            }
+        }
+
+        // Sistema di calcolo del Countdown
+        function startCountdown(dateStr, timeStr) {
+            const targetDate = new Date(`${dateStr}T${timeStr}:00`).getTime();
+            
+            setInterval(() => {
+                const now = new Date().getTime();
+                const difference = targetDate - now;
+
+                if (difference < 0) {
+                    document.querySelector('.countdown-container').innerHTML = "<b style='color:#ffb3c6; padding:5px;'>It's time for our date! 🥰🥂</b>";
+                    return;
+                }
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('cdDays').innerText = String(days).padStart(2, '0');
+                document.getElementById('cdHours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('cdMins').innerText = String(minutes).padStart(2, '0');
+                document.getElementById('cdSecs').innerText = String(seconds).padStart(2, '0');
+            }, 1000);
+        }
+
+        // Esportazione calendario .ics
+        function addToCalendar() {
+            if(!rawDate || !rawTime) return;
+            const dateTimeStr = rawDate.replace(/-/g, '') + 'T' + rawTime.replace(/:/g, '') + '00';
+            const [hours, minutes] = rawTime.split(':');
+            let endHours = parseInt(hours) + 2;
+            if (endHours >= 24) endHours = 23;
+            const dateTimeEndStr = rawDate.replace(/-/g, '') + 'T' + String(endHours).padStart(2, '0') + minutes + '00';
+
+            const icsContent = [
+                'BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
+                `DTSTART:${dateTimeStr}`, `DTEND:${dateTimeEndStr}`,
+                'SUMMARY:Romantic Date! 🌸',
+                `DESCRIPTION:Meeting up for some delicious ${selectedFood}. 🥰`,
+                'LOCATION:To be decided 🥂', 'END:VEVENT', 'END:VCALENDAR'
+            ].join('\r\n');
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', 'Romantic_Date.ics');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
