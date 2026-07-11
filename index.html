@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Will you go on a date with me? 🌸</title>
-    <!-- Libreria esterna per l'effetto coriandoli (Canvas-Confetti) -->
+    <!-- Libreria per i coriandoli -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg-color: #f7e1e6;
-            --card-bg: rgba(255, 255, 255, 0.92);
             --primary-color: #d14d72;
             --text-color: #4a4a4a;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(45deg, #f7e1e6, #fcd5dc, #f5eff1);
+            background-size: 300% 300%;
+            animation: gradientBG 10s ease infinite;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -25,14 +25,50 @@
             color: var(--text-color);
             overflow: hidden;
             position: relative;
-            transition: background-color 1s ease;
-            perspective: 1000px; /* Necessario per l'effetto 3D */
+            perspective: 1000px;
         }
 
-        /* Sfondo con cuori animati */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #muteToggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(209, 77, 114, 0.3);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        #muteToggle:hover { transform: scale(1.1); background: #fff; }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 14px;
+            animation: sparkleOut 1s linear forwards;
+            z-index: 99;
+        }
+        @keyframes sparkleOut {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -100%) scale(0.5); opacity: 0; }
+        }
+
         .heart-bg {
             position: absolute;
-            color: rgba(209, 77, 114, 0.2);
+            color: rgba(209, 77, 114, 0.18);
             font-size: 20px;
             animation: floatUp 6s linear infinite;
             bottom: -50px;
@@ -40,28 +76,26 @@
             user-select: none;
             pointer-events: none;
         }
-
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 1; }
             100% { transform: translateY(-105vh) rotate(360deg) scale(1.2); opacity: 0; }
         }
 
         .card {
-            background: var(--card-bg);
-            padding: 30px;
+            background: rgba(255, 255, 255, 0.93);
+            padding: 35px 30px;
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(209, 77, 114, 0.15);
+            box-shadow: 0 20px 50px rgba(209, 77, 114, 0.15);
             text-align: center;
             max-width: 400px;
             width: 90%;
             z-index: 10;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             transform-style: preserve-3d;
-            transition: transform 0.1s ease, background-color 0.5s;
+            transition: transform 0.1s ease;
             animation: cardPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         @keyframes cardPop {
             from { opacity: 0; transform: scale(0.8) translateY(30px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
@@ -73,13 +107,12 @@
             overflow: hidden;
             border-radius: 16px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.03);
             background: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-
         .gif-container img {
             width: auto;
             height: 100%;
@@ -88,11 +121,20 @@
         }
 
         h2 {
-            font-size: 1.7rem;
+            font-size: 1.65rem;
             margin-bottom: 25px;
             color: #333;
             line-height: 1.4;
+            min-height: 75px;
         }
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: var(--primary-color);
+            margin-left: 4px;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         .btn-container {
             display: flex;
@@ -110,24 +152,34 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        button:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 8px 20px rgba(209, 77, 114, 0.3);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
         }
 
         #yesBtn {
             background-color: var(--primary-color);
             color: white;
+            animation: heartbeat 1.5s infinite;
+            z-index: 12;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.05); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        #yesBtn:hover {
+            animation: none;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(209, 77, 114, 0.35);
         }
 
+        /* FIX: Rimosso position absolute iniziale per evitare la sovrapposizione */
         #noBtn {
             background-color: #efebeb;
             color: #777;
-            position: absolute;
-            transition: all 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+            z-index: 11;
+            transition: transform 0.2s ease;
         }
 
         .hidden { display: none !important; }
@@ -136,13 +188,7 @@
             margin-bottom: 20px;
             text-align: left;
         }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
 
         input[type="date"], input[type="time"] {
             width: 100%;
@@ -155,11 +201,7 @@
             transition: all 0.3s;
             background: #fdfbfb;
         }
-
-        input:focus {
-            border-color: var(--primary-color);
-            background: #fff;
-        }
+        input:focus { border-color: var(--primary-color); background: #fff; }
 
         .grid-food {
             display: grid;
@@ -167,7 +209,6 @@
             gap: 15px;
             margin-bottom: 25px;
         }
-
         .food-option {
             border: 2px solid #efebeb;
             padding: 18px 10px;
@@ -177,12 +218,7 @@
             transition: all 0.25s ease;
             background: white;
         }
-
-        .food-option:hover {
-            transform: translateY(-3px);
-            border-color: #ffb3c6;
-        }
-
+        .food-option:hover { transform: translateY(-3px); border-color: #ffb3c6; }
         .food-option.selected {
             border-color: var(--primary-color);
             background-color: #fdf0f3;
@@ -200,32 +236,19 @@
             border-left: 5px solid var(--primary-color);
         }
 
-        /* Stile del conto alla rovescia */
         .countdown-container {
             display: flex;
             justify-content: space-around;
-            background: #333;
+            background: #2b2b2b;
             color: white;
             padding: 12px;
             border-radius: 14px;
             margin-top: 15px;
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
         }
-        .countdown-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .countdown-number {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #ffb3c6;
-        }
-        .countdown-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            opacity: 0.7;
-        }
+        .countdown-box { display: flex; flex-direction: column; align-items: center; }
+        .countdown-number { font-size: 1.3rem; font-weight: bold; color: #ffb3c6; }
+        .countdown-label { font-size: 0.65rem; text-transform: uppercase; opacity: 0.7; }
 
         #calBtn {
             background-color: #2b9348;
@@ -236,34 +259,30 @@
             padding: 12px;
         }
 
-        .subtext {
-            font-size: 0.8rem;
-            color: #aa9e9e;
-            margin-top: 20px;
-            font-style: italic;
-        }
+        .subtext { font-size: 0.8rem; color: #aa9e9e; margin-top: 20px; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <!-- Canzoncina di sottofondo -->
+    <div id="muteToggle" onclick="toggleMute()">🎵</div>
+
     <audio id="bgMusic" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- STEP 1: La Proposta -->
+    <!-- STEP 1 -->
     <div id="step1" class="card">
         <div class="gif-container">
             <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZndDZsZ3ZxaXN0cnVvNDFpbnM2bW95cmZid294YTZidmF0cndwNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/c76IJLufpNwSULPk77/giphy.gif" alt="Cute bear">
         </div>
-        <h2>🌸 Will you go on a date with me<span id="customName"></span>? 🌸</h2>
+        <h2 id="typewriterTitle"><span id="textTarget"></span><span class="cursor"></span></h2>
         <div class="btn-container">
             <button id="yesBtn" onclick="startRomance()">YES 💖</button>
             <button id="noBtn">NO 🥺</button>
         </div>
     </div>
 
-    <!-- STEP 2: Quando e l'Ora -->
+    <!-- STEP 2 -->
     <div id="step2" class="card hidden">
         <h2>So... when are you free? 📅🐾</h2>
         <div class="input-group">
@@ -277,7 +296,7 @@
         <button id="yesBtn" style="width: 100%;" onclick="nextStep(3)">Next 💞</button>
     </div>
 
-    <!-- STEP 3: Il Cibo -->
+    <!-- STEP 3 -->
     <div id="step3" class="card hidden">
         <h2>What are we feeling? 🍕🥂</h2>
         <div class="grid-food">
@@ -289,7 +308,7 @@
         <button id="yesBtn" style="width: 100%;" onclick="showSummary()">Next 💘</button>
     </div>
 
-    <!-- STEP 4: Riepilogo Finale -->
+    <!-- STEP 4 -->
     <div id="step4" class="card hidden">
         <div class="gif-container">
             <img src="https://media.tenor.com/gU4o4Y5Cko8AAAAM/milk-and-mocha-hug.gif" alt="Cute hug">
@@ -299,7 +318,6 @@
         <div class="summary-item">⏰ <span id="finalTime"></span></div>
         <div class="summary-item">🍽️ <span id="finalFood"></span></div>
         
-        <!-- MITIGAZIONE COUNTDOWN -->
         <div class="countdown-container">
             <div class="countdown-box"><span class="countdown-number" id="cdDays">00</span><span class="countdown-label">Days</span></div>
             <div class="countdown-box"><span class="countdown-number" id="cdHours">00</span><span class="countdown-label">Hours</span></div>
@@ -317,29 +335,73 @@
         let rawDate = "";
         let rawTime = "";
         let noClickCount = 0;
+        let isMuted = false;
 
-        // Configura qui la tua mail per ricevere la notifica segreta!
-        const MY_EMAIL = "INSERISCI_QUI_LA_TUA_EMAIL@ESEMPIO.COM"; 
+        const FORMSPREE_ID = "IL_TUO_ID_QUI"; 
 
-        // Lettura nome da URL
         const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('name');
-        if (name) document.getElementById('customName').innerText = ", " + name;
+        const nameParam = urlParams.get('name') || "";
+        const completeText = `🌸 Will you go on a date with me${nameParam ? ', ' + nameParam : ''}? 🌸`;
 
-        // Effetto di inclinazione 3D (Parallasse) della Card al movimento del mouse
+        document.addEventListener('mousemove', (e) => { createSparkle(e.pageX, e.pageY); });
+        document.addEventListener('touchmove', (e) => { createSparkle(e.touches[0].pageX, e.touches[0].pageY); });
+
+        function createSparkle(x, y) {
+            if (Math.random() > 0.25) return; 
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            const items = ['✨', '⭐', '🌸', '💕', '✨'];
+            sparkle.innerText = items[Math.floor(Math.random() * items.length)];
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+
+        let charIndex = 0;
+        function typeWriter() {
+            if (charIndex < completeText.length) {
+                document.getElementById("textTarget").innerHTML += completeText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 65);
+            }
+        }
+        window.onload = typeWriter;
+
+        const music = document.getElementById('bgMusic');
+        function toggleMute() {
+            isMuted = !isMuted;
+            music.muted = isMuted;
+            document.getElementById('muteToggle').innerText = isMuted ? "🔇" : "🎵";
+        }
+
+        function fadeInAudio() {
+            if (isMuted) return;
+            music.volume = 0;
+            music.play().catch(e => console.log("Interazione richiesta"));
+            let vol = 0;
+            const interval = setInterval(() => {
+                if (vol < 0.4) {
+                    vol += 0.05;
+                    music.volume = vol;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+
         const card = document.querySelector('.card');
         document.addEventListener('mousemove', (e) => {
-            if(window.innerWidth < 768) return; // Disattiva su mobile per fluidità
+            if(window.innerWidth < 768) return; 
             const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
             const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
         });
 
-        // Generatore di cuori
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart-bg');
-            const hearts = ['❤️', '💖', '🌸', '💕', '💘', '✨'];
+            const hearts = ['❤️', '💖', '🌸', '💕', '💘'];
             heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
             heart.style.left = Math.random() * 100 + "vw";
             heart.style.animationDuration = Math.random() * 3 + 4 + "s";
@@ -350,13 +412,11 @@
         let heartInterval = setInterval(createHeart, 800);
 
         function startRomance() {
-            const music = document.getElementById('bgMusic');
-            music.volume = 0.4;
-            music.play().catch(e => console.log("Audio in attesa"));
+            fadeInAudio();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-            document.body.style.backgroundColor = "#fcd5dc";
+            document.body.style.background = "linear-gradient(45deg, #fcd5dc, #ffb3c6, #f7e1e6)";
             clearInterval(heartInterval);
-            heartInterval = setInterval(createHeart, 300); 
+            heartInterval = setInterval(createHeart, 250); 
             nextStep(2);
         }
 
@@ -364,13 +424,19 @@
         document.getElementById('dateInput').min = today;
         document.getElementById('dateInput').value = today;
 
-        // Bottone NO ironico che si rimpicciolisce fino ad arrendersi
+        // FIX: Il bottone NO diventa absolute solo quando viene attivato il trigger per scappare
         const noBtn = document.getElementById('noBtn');
         function moveNoButton() {
             noClickCount++;
+            
+            // Attiva il posizionamento absolute al primo tentativo di interazione
+            if(noBtn.style.position !== 'absolute') {
+                noBtn.style.position = 'absolute';
+            }
+
             if(noClickCount >= 5) {
                 noBtn.style.position = 'static';
-                noBtn.style.transform = 'scale(0.5)';
+                noBtn.style.transform = 'scale(0.6)';
                 noBtn.innerText = "Ok, mi arrendo... clicca YES! 🏳️";
                 noBtn.disabled = true;
                 return;
@@ -380,7 +446,7 @@
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - (padding * 2)) + padding;
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
-            noBtn.style.transform = `scale(${1 - noClickCount*0.15})`; // Diventa progressivamente più piccolo
+            noBtn.style.transform = `scale(${1 - noClickCount*0.15})`;
         }
         noBtn.addEventListener('mouseover', moveNoButton);
         noBtn.addEventListener('click', moveNoButton); 
@@ -388,7 +454,6 @@
         function nextStep(step) {
             document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
             document.getElementById('step' + step).classList.remove('hidden');
-            // Reset rotazione 3D al cambio di pagina
             card.style.transform = "rotateY(0deg) rotateX(0deg)";
         }
 
@@ -418,9 +483,8 @@
             nextStep(4);
 
             clearInterval(heartInterval);
-            setInterval(createHeart, 120);
+            setInterval(createHeart, 100);
 
-            // Esplosione Coriandoli 
             var duration = 5 * 1000;
             var end = Date.now() + duration;
             (function frame() {
@@ -429,25 +493,22 @@
                 if (Date.now() < end) { requestAnimationFrame(frame); }
             }());
 
-            // Avvia il Countdown reale
             startCountdown(rawDate, rawTime);
 
-            // Invia la notifica email invisibile via Formspree se configurata
-            if(MY_EMAIL && !MY_EMAIL.includes("ESEMPIO.COM")) {
-                const formData = new FormData();
-                formData.append('Name', name || 'Qualcuno');
-                formData.append('Date', formattedDate);
-                formData.append('Time', rawTime);
-                formData.append('Food Chosen', selectedFood);
-                fetch(`https://formspree.io/f/${MY_EMAIL.split('@')[0]}`, { // Formspree di fallback o webhook alternativo
+            if(FORMSPREE_ID && FORMSPREE_ID !== "IL_TUO_ID_QUI") {
+                fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
                     method: 'POST',
-                    body: formData,
-                    headers: { 'Accept': 'application/json' }
-                }).catch(e => console.log("Invio notifica in background."));
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({
+                        Persona: nameParam || 'Qualcuno',
+                        Data: formattedDate,
+                        Ora: rawTime,
+                        Cibo: selectedFood
+                    })
+                }).catch(e => console.log("Notifica inviata."));
             }
         }
 
-        // Sistema di calcolo del Countdown
         function startCountdown(dateStr, timeStr) {
             const targetDate = new Date(`${dateStr}T${timeStr}:00`).getTime();
             
@@ -472,7 +533,7 @@
             }, 1000);
         }
 
-        // Esportazione calendario .ics
+        // Calcolatore anno corrente dinamico mitigato per eventi ICS
         function addToCalendar() {
             if(!rawDate || !rawTime) return;
             const dateTimeStr = rawDate.replace(/-/g, '') + 'T' + rawTime.replace(/:/g, '') + '00';
